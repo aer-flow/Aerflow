@@ -446,23 +446,30 @@ body {
 /* Static Glow for Mobile */
 @media (hover: none) {
   .glow-content::after {
-    /* Bulletproof method for mobile: layer backgrounds instead of masking.
-       Layer 1: Solid black, clipped to padding-box (the inside).
-       Layer 2: The gradient, clipped to border-box (the outside). */
-    background: linear-gradient(#0a0a0b, #0a0a0b) padding-box,
-                var(--gradient) border-box;
-    background-clip: padding-box, border-box;
-    background-origin: border-box;
+    /* Set the gradient as the background of the container itself on mobile */
+    /* and disable the fixed attachment which glitches during scroll */
+    background: var(--gradient);
+    background-attachment: scroll;
+    inset: 0;
     
-    /* Disable all masks which are prone to failure on mobile WebKit */
+    /* Remove all buggy masking logic */
     mask: none;
     -webkit-mask: none;
     mask-image: none;
     -webkit-mask-image: none;
-
-    /* Ensure transparency works as intended with --active */
     opacity: var(--active);
-    border: var(--glowingeffect-border-width) solid transparent;
+  }
+
+  .glow-mask {
+    position: absolute;
+    /* This creates the 1.5px border by covering the center */
+    inset: var(--glowingeffect-border-width);
+    border-radius: inherit;
+    /* Match the glass effect of the parent card precisely */
+    background: rgba(10, 10, 12, 0.98); 
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    z-index: 1;
   }
 }
 /* 6. Hero Text Shutter Animation */
