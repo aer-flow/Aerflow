@@ -454,13 +454,20 @@ body {
     border-color: rgba(255, 255, 255, 0.1);
   }
 }
-
 /* 6. Hero Text Shutter Animation */
 .hero-text-container {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
+  justify-content: flex-start;
+  font-size: 3.75rem; /* text-6xl */
+  line-height: 1;
   align-items: center;
+}
+
+@media (min-width: 768px) {
+  .hero-text-container {
+    font-size: 5rem; /* text-8xl approx */
+  }
 }
 
 .char-wrapper {

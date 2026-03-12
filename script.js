@@ -416,7 +416,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Clear and prepare container
     heroTitle.innerHTML = '';
-    heroTitle.className = 'font-bold tracking-tighter leading-none mb-8 hero-text-container';
+    heroTitle.className = 'text-6xl md:text-8xl font-bold tracking-tighter leading-none mb-8 hero-text-container';
     heroTitle.style.display = 'flex';
     heroTitle.style.flexWrap = 'wrap';
     heroTitle.style.justifyContent = 'flex-start';
@@ -569,11 +569,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Initialize from localStorage or default to English
   const savedLang = localStorage.getItem('aerflow_lang') || 'en';
-  if (savedLang === 'ro') {
-    updateLanguage('ro');
-  } else {
-    initHeroTextAnimation();
-  }
+  updateLanguage(savedLang);
   
   initPremiumButtons();
 
