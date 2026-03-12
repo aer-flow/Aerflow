@@ -443,6 +443,18 @@ body {
   transition: opacity 0.3s ease;
 }
 
+/* Static Glow for Mobile */
+@media (hover: none) {
+  .glow-card .glow-content {
+    --active: 0.15; /* Subtle constant glow on mobile */
+  }
+  .glow-card .glow-content::after {
+    mask-image: none;
+    -webkit-mask-image: none;
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+}
+
 /* 6. Hero Text Shutter Animation */
 .hero-text-container {
   display: flex;
@@ -682,4 +694,24 @@ body {
     height: 24px;
     background: rgba(255, 255, 255, calc(0.08 * ((var(--scroll-progress, 0) - 0.8) * 5)));
     opacity: max(0, calc((var(--scroll-progress, 0) - 0.8) * 5));
+}
+
+@media (max-width: 767px) {
+    #services-grid-wrapper.is-pinned {
+        /* On mobile, cap the start height to avoid full-screen coverage */
+        height: max(56px, calc(300px - (300px - 56px) * var(--scroll-progress, 0)));
+    }
+    
+    #services-grid-wrapper.is-pinned #services-grid {
+        padding: 0 calc(8px * var(--scroll-progress, 1));
+        gap: calc(8px * (1 - var(--scroll-progress, 0)));
+    }
+
+    #services-grid-wrapper.is-pinned .glass-effect {
+        padding: calc(16px * (1 - var(--scroll-progress, 0))) !important;
+    }
+    
+    #services-grid-wrapper.is-pinned .service-pinned-content span {
+        font-size: 8px; /* Slightly smaller text for mobile bar */
+    }
 }

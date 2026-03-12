@@ -243,7 +243,8 @@ document.addEventListener('DOMContentLoaded', () => {
   // Glowing Effect Logic (Vanilla JS adaptation)
   const initGlowingEffects = () => {
     const cards = document.querySelectorAll('.glow-card');
-    const mousePos = { x: 0, y: 0 };
+    const mousePos = { x: -1000, y: -1000 }; // Start far away to avoid initial activation
+    const isTouchDevice = window.matchMedia('(hover: none)').matches;
     const state = new Map(); // Store per-card state (current angle, active state)
 
     cards.forEach(card => {
@@ -294,12 +295,20 @@ document.addEventListener('DOMContentLoaded', () => {
         s.element.style.setProperty('--active', s.isActive ? '1' : '0');
 
         if (s.isActive) {
-          // Angle calculation
-          const target = (180 * Math.atan2(mouseY - centerY, mouseX - centerX)) / Math.PI + 90;
-          
-          // Smooth interpolation (Lerp)
-          const diff = ((target - s.currentAngle + 180) % 360) - 180;
-          s.currentAngle += diff * 0.15; // Speed factor (adjust as needed)
+          // On touch devices, we might want a static or no angle calculation 
+          // to prevent the "spinning cone" effect during scrolling.
+          if (isTouchDevice) {
+            // Option: set a static angle or just don't update if not actively touching
+            // For now, let's keep it static on mobile to focus on the edge highlight
+            s.currentAngle = 0; 
+          } else {
+            // Angle calculation for hover-capable devices
+            const target = (180 * Math.atan2(mouseY - centerY, mouseX - centerX)) / Math.PI + 90;
+            
+            // Smooth interpolation (Lerp)
+            const diff = ((target - s.currentAngle + 180) % 360) - 180;
+            s.currentAngle += diff * 0.15; // Speed factor (adjust as needed)
+          }
           
           s.element.style.setProperty('--start', String(s.currentAngle));
         }
@@ -592,8 +601,13 @@ document.addEventListener('DOMContentLoaded', () => {
       if (scrollPastNav >= 0) {
         if (!isPinned) {
           // Just pinned
-          startHeight = gridWrapper.offsetHeight;
-          placeholder.style.height = `${startHeight}px`;
+          const isMobile = window.innerWidth < 768;
+          const actualHeight = gridWrapper.offsetHeight;
+          // On mobile, the cards are stacked, so offsetHeight is huge.
+          // We cap the animation's startHeight for a smoother transition.
+          startHeight = isMobile ? Math.min(actualHeight, 300) : actualHeight;
+          
+          placeholder.style.height = `${actualHeight}px`;
           placeholder.style.display = 'block';
           
           gridWrapper.classList.add('is-pinned');
