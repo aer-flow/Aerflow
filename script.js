@@ -581,61 +581,67 @@ document.addEventListener('DOMContentLoaded', () => {
   initPremiumButtons();
 
 
-  // Solutions Sub-Navigation Logic (Fluid Morphing Cards)
+  // Individual Service Card Morphing into Fixed Bar
   const initSubNav = () => {
     const gridWrapper = document.getElementById('services-grid-wrapper');
-    const placeholder = document.getElementById('services-grid-placeholder');
-    const grid = document.getElementById('services-grid');
-    if (!gridWrapper || !placeholder || !grid) return;
+    const cards = document.querySelectorAll('#services-grid .glow-card');
+    if (!gridWrapper || cards.length === 0) return;
 
-    let isPinned = false;
-    let startHeight = 0;
-    const scrollDistance = 400; // How many pixels of scrolling it takes to morph
+    // Create a placeholder for each card to maintain layout when pinned
+    const placeholders = new Map();
+    cards.forEach(card => {
+      const p = document.createElement('div');
+      p.className = 'service-placeholder';
+      p.style.display = 'none';
+      card.parentNode.insertBefore(p, card);
+      placeholders.set(card, p);
+    });
 
-    window.addEventListener('scroll', () => {
-      // Use placeholder position if pinned, otherwise use the grid itself
-      const trackingEl = isPinned ? placeholder : gridWrapper;
-      const rect = trackingEl.getBoundingClientRect();
-      const navHeight = 80;
+    const scrollDistance = 250; // Pixels to complete morph
+    const navHeight = 80;
+
+    const updateCards = () => {
+      const isMobile = window.innerWidth < 1024;
       
-      // Calculate how far past the nav we have scrolled
-      const scrollPastNav = navHeight - rect.top;
-
-      if (scrollPastNav >= 0) {
-        if (!isPinned) {
-          // Just pinned
-          const isMobile = window.innerWidth < 768;
-          const actualHeight = gridWrapper.offsetHeight;
-          // On mobile, the cards are stacked, so offsetHeight is huge.
-          // We cap the animation's startHeight for a smoother transition.
-          startHeight = isMobile ? Math.min(actualHeight, 300) : actualHeight;
-          
-          placeholder.style.height = `${actualHeight}px`;
-          placeholder.style.display = 'block';
-          
-          gridWrapper.classList.add('is-pinned');
-          gridWrapper.style.setProperty('--start-height', `${startHeight}px`);
-          isPinned = true;
-        }
-
-        // Calculate progress (0 to 1) based on scroll distance
-        let progress = scrollPastNav / scrollDistance;
-        progress = Math.max(0, Math.min(1, progress));
+      cards.forEach((card, index) => {
+        const p = placeholders.get(card);
+        const trackingEl = card.classList.contains('is-pinned') ? p : card;
+        const rect = trackingEl.getBoundingClientRect();
         
-        // Apply progress as a CSS variable for the calc() functions to use
-        gridWrapper.style.setProperty('--scroll-progress', progress);
-        
-      } else {
-        if (isPinned) {
-          // Unpin
-          gridWrapper.classList.remove('is-pinned');
-          placeholder.style.display = 'none';
-          gridWrapper.style.removeProperty('--scroll-progress');
-          gridWrapper.style.removeProperty('--start-height');
-          isPinned = false;
+        // How far past the sticky threshold (navHeight) this card has scrolled
+        const scrollPastNav = navHeight - rect.top;
+
+        if (scrollPastNav >= 0) {
+          if (!card.classList.contains('is-pinned')) {
+            // Pin the card
+            const currentHeight = card.offsetHeight;
+            p.style.height = `${currentHeight}px`;
+            p.style.display = 'block';
+            card.classList.add('is-pinned');
+            card.style.setProperty('--start-height', `${currentHeight}px`);
+            // Assign slot index for CSS positioning
+            card.style.setProperty('--slot-index', index);
+          }
+
+          let progress = scrollPastNav / scrollDistance;
+          progress = Math.max(0, Math.min(1, progress));
+          card.style.setProperty('--scroll-progress', progress);
+        } else {
+          if (card.classList.contains('is-pinned')) {
+            // Unpin the card
+            card.classList.remove('is-pinned');
+            p.style.display = 'none';
+            card.style.removeProperty('--scroll-progress');
+            card.style.removeProperty('--start-height');
+            card.style.removeProperty('--slot-index');
+          }
         }
-      }
-    }, { passive: true });
+      });
+    };
+
+    window.addEventListener('scroll', updateCards, { passive: true });
+    window.addEventListener('resize', updateCards, { passive: true });
+    updateCards();
   };
   
   initSubNav();
