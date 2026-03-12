@@ -256,13 +256,11 @@ document.addEventListener('DOMContentLoaded', () => {
       const glowContainer = document.createElement('div');
       glowContainer.className = 'glow-container';
       
-      // Using original parameters from Demo: spread=40, proximity=64, inactiveZone=0.01
-      // spread 40/360 * 100 = ~11
       glowContainer.innerHTML = `
         <svg class="glow-svg" preserveAspectRatio="none">
           <rect x="1" y="1" width="calc(100% - 2px)" height="calc(100% - 2px)" rx="12" 
                 fill="none" stroke="url(#glow-poly-grad)" stroke-width="2.5" pathLength="100"
-                style="stroke-dasharray: 11 89; stroke-dashoffset: 0; opacity: 0; transition: opacity 0.3s ease; filter: drop-shadow(0 0 3px rgba(221, 123, 187, 0.4));">
+                style="filter: drop-shadow(0 0 3px rgba(221, 123, 187, 0.4));">
           </rect>
         </svg>`;
       
@@ -288,7 +286,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       state.set(card, {
         currentAngle: 0,
-        element: glowContainer.querySelector('rect')
+        container: glowContainer.querySelector('.glow-svg')
       });
     });
 
@@ -313,6 +311,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const s = state.get(card);
         const rect = card.getBoundingClientRect();
         
+        // Use spread=20 for a nice balance of length and fade
+        s.container.style.setProperty('--spread', '20');
+
         if (isTouchDevice) {
           const isBasicallyInView = rect.top < window.innerHeight && rect.bottom > 0;
           const isActive = (card === closestCard) && isBasicallyInView && (minDist < window.innerHeight * 0.4);
@@ -320,14 +321,14 @@ document.addEventListener('DOMContentLoaded', () => {
           if (isActive) {
             const cardCenterY = rect.top + rect.height / 2;
             const diffY = cardCenterY - viewportCenterY;
-            const offset = (diffY / 400) * 100;
-            s.element.style.strokeDashoffset = String(-offset);
-            s.element.style.opacity = '1';
+            // Map scroll to angle (0 to 360)
+            const angle = (diffY / 400) * 360;
+            s.container.style.setProperty('--start', String(angle));
+            s.container.style.setProperty('--active', '1');
           } else {
-            s.element.style.opacity = '0';
+            s.container.style.setProperty('--active', '0');
           }
         } else {
-          // Precise Desktop Logic from original component
           const proximity = 64;
           const inactiveZone = 0.01;
           const mouseX = mousePos.x;
@@ -350,13 +351,12 @@ document.addEventListener('DOMContentLoaded', () => {
           if (isActive) {
             const targetAngle = (Math.atan2(mouseY - center[1], mouseX - center[0]) * (180 / Math.PI) + 450) % 360;
             const angleDiff = ((targetAngle - s.currentAngle + 180) % 360) - 180;
-            s.currentAngle += angleDiff * 0.15; // Smooth interpolation
+            s.currentAngle += angleDiff * 0.15;
 
-            const offset = (s.currentAngle / 360) * 100;
-            s.element.style.strokeDashoffset = String(-offset);
-            s.element.style.opacity = '1';
+            s.container.style.setProperty('--start', String(s.currentAngle));
+            s.container.style.setProperty('--active', '1');
           } else {
-            s.element.style.opacity = '0';
+            s.container.style.setProperty('--active', '0');
           }
         }
       });

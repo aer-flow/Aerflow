@@ -438,10 +438,25 @@ body {
    across all browsers and multi-color support without masking issues. */
 .glow-svg {
   position: absolute;
-  inset: -1px; /* Slight bleed to cover the border exactly */
+  inset: -1px;
   width: calc(100% + 2px);
   height: calc(100% + 2px);
   overflow: visible;
+  /* Hybrid Mask: Fades the ends of the SVG stroke */
+  mask-image: conic-gradient(
+    from calc((var(--start) - var(--spread)) * 1deg),
+    #00000000 0deg,
+    #fff,
+    #00000000 calc(var(--spread) * 2deg)
+  );
+  -webkit-mask-image: conic-gradient(
+    from calc((var(--start) - var(--spread)) * 1deg),
+    #00000000 0deg,
+    #fff,
+    #00000000 calc(var(--spread) * 2deg)
+  );
+  opacity: var(--active, 0);
+  transition: opacity 0.3s ease;
 }
 
 /* Ensure content is always above the glow effects */
