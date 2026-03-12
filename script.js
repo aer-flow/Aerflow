@@ -216,14 +216,19 @@ document.addEventListener('DOMContentLoaded', () => {
       const rect = lampSection.getBoundingClientRect();
       const viewportCenter = window.innerHeight / 2;
       
-      // Target the visual lamp center (top of section + some offset for the beams)
-      const lampVisualCenter = rect.top + 150; // Offset to roughly where the horizontal line is
+      // Target the visual lamp center
+      const lampVisualCenter = rect.top + 150; 
       
-      const distanceFromCenter = Math.abs(lampVisualCenter - viewportCenter);
-      
-      // Stricter falloff: Full open at center, closes quickly when away
-      const falloff = window.innerHeight * 0.3; 
-      const progress = Math.max(0, 1 - (distanceFromCenter / falloff));
+      let progress = 0;
+      if (lampVisualCenter <= viewportCenter) {
+        // Sticky state: If the lamp is at or above the center, stay 100% open
+        progress = 1.0;
+      } else {
+        // Opening state: Progressive opening as it approaches color
+        const distanceFromCenter = Math.abs(lampVisualCenter - viewportCenter);
+        const falloff = window.innerHeight * 0.3; 
+        progress = Math.max(0, 1 - (distanceFromCenter / falloff));
+      }
       
       lampContainer.style.setProperty('--lamp-progress', progress.toFixed(3));
       
