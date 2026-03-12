@@ -141,12 +141,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-  // Hero Animation: Infinite Grid & Mouse Spotlight
-  const hero = document.getElementById('hero');
+  // Services Animation: Infinite Grid & Mouse Spotlight
+  const services = document.getElementById('services');
   const gridBase = document.getElementById('grid-base');
   const gridSpotlight = document.getElementById('grid-spotlight');
   
-  if (hero && gridBase && gridSpotlight) {
+  if (services && gridBase && gridSpotlight) {
     let mouseX = 0;
     let mouseY = 0;
     let gridX = 0;
@@ -154,13 +154,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const speed = 0.5;
 
     // Track mouse for spotlight
-    hero.addEventListener('mousemove', (e) => {
-      const rect = hero.getBoundingClientRect();
+    services.addEventListener('mousemove', (e) => {
+      const rect = services.getBoundingClientRect();
       const x = e.clientX - rect.left;
       const y = e.clientY - rect.top;
       
-      hero.style.setProperty('--mouse-x', `${x}px`);
-      hero.style.setProperty('--mouse-y', `${y}px`);
+      services.style.setProperty('--mouse-x', `${x}px`);
+      services.style.setProperty('--mouse-y', `${y}px`);
     });
 
     // Animation Loop

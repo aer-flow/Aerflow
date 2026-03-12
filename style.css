@@ -2,6 +2,7 @@ body {
   background-color: #0a0a0c;
   color: #ffffff;
   -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
 }
 .glass-effect {
   background: rgba(255, 255, 255, 0.02);
@@ -50,7 +51,7 @@ body {
 .card-reveal-delay-2 { transition-delay: 0.2s; }
 .card-reveal-delay-3 { transition-delay: 0.3s; }
 .card-reveal-delay-4 { transition-delay: 0.4s; }
-.hero-spotlight-mask {
+.services-spotlight-mask {
   mask-image: radial-gradient(400px circle at var(--mouse-x, 0) var(--mouse-y, 0), black 20%, transparent 80%);
   -webkit-mask-image: radial-gradient(400px circle at var(--mouse-x, 0) var(--mouse-y, 0), black 20%, transparent 80%);
 }
