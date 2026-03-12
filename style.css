@@ -317,12 +317,12 @@ body {
 .lamp-container {
   min-height: 100vh;
   transition: all 0.3s ease-in-out;
-  z-index: 49; /* Max priority below nav (z-50) */
+  z-index: 50; /* Match philosophy section */
 }
 
 .lamp-beam {
   width: 15rem; /* Initial width */
-  opacity: 0.2;   /* Boosted initial opacity for mobile visibility */
+  opacity: 0.4;   /* Boosted initial opacity for mobile visibility */
   transition: all 0.3s ease-in-out;
   pointer-events: none;
 }
@@ -357,7 +357,7 @@ body {
 /* Active State Triggered by JS */
 .lamp-container.is-active .lamp-beam {
   width: calc(15rem + (15rem * var(--lamp-progress, 0)));
-  opacity: calc(0.2 + (0.8 * var(--lamp-progress, 0)));
+  opacity: calc(0.4 + (0.6 * var(--lamp-progress, 0)));
   transition: width 0.1s linear, opacity 0.1s linear; /* Small transition for smoothness */
 }
 
