@@ -35,18 +35,17 @@
     }
   </script>
 <!-- END: Tailwind CSS -->
-<!-- BEGIN: Custom Styles -->
-<link rel="stylesheet" href="style.css?v=1.1.4">
+<link rel="stylesheet" href="style.css?v=1.1.8">
 <!-- END: Custom Styles -->
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,FILL@0..1&amp;display=swap" rel="stylesheet"/>
-<link rel="icon" type="image/svg+xml" href="logos/logo-aerflow.svg?v=1.1.5"/>
+<link rel="icon" type="image/png" href="logos/logo vector.png?v=1.1.8"/>
 </head>
 <body class="font-sans">
 <!-- BEGIN: Navigation -->
 <nav class="fixed top-0 w-full z-50 border-b border-brand-border bg-brand-black/80 backdrop-blur-md" data-purpose="main-nav">
 <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
 <div class="flex items-center gap-3">
-<img alt="Aerflow Logo" class="h-10 w-auto" data-purpose="nav-logo" src="logos/logo-aerflow.svg?v=1.1.5"/>
+<img alt="Aerflow Logo" class="h-10 w-auto" data-purpose="nav-logo" src="logos/logo vector.png?v=1.1.8"/>
 <span class="text-xl font-bold tracking-tight">AER<span class="text-brand-accent">FLOW</span></span>
 </div>
 <div class="hidden md:flex items-center gap-8 text-sm font-medium text-gray-400">
@@ -154,10 +153,10 @@
 <h2 class="text-xs font-bold tracking-[0.3em] uppercase text-brand-accent mb-4 tracking-tight" data-i18n="services_badge">Core Ecosystem</h2>
 <h3 class="text-4xl md:text-5xl font-bold tracking-tight reveal" data-i18n="services_title">Strategic AI Solutions.</h3>
 </div>
-<div id="services-grid-wrapper" class="z-20">
+<div id="services-grid-wrapper" class="relative z-30">
 <div class="grid md:grid-cols-3 gap-8 relative" id="services-grid">
 <!-- Automation -->
-        <a href="code ai.html" id="ai-automation-link" class="glass-effect p-8 rounded-custom glow-hover transition-all duration-500 group hover:-translate-y-2 reveal glow-card flex flex-col h-full no-underline text-inherit relative z-20 overflow-hidden" data-purpose="service-card" style="transition-property: all; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 500ms;">
+        <a href="code ai.html" id="ai-automation-link" class="glass-effect p-8 rounded-custom glow-hover transition-all duration-500 group hover:-translate-y-2 reveal glow-card flex flex-col h-full no-underline text-inherit relative z-30 overflow-hidden" data-purpose="service-card" style="transition-property: all; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 500ms;">
           
           <!-- Content (Set to relative z-10 to sit above spline) -->
           <div class="relative z-10 flex flex-col h-full service-content-inner">
@@ -171,48 +170,34 @@
               <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M13 7l5 5m0 0l-5 5m5-5H6" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
             </div>
           </div>
-          <!-- Pinned minimal content -->
-          <div class="absolute inset-0 z-20 items-center justify-center gap-2 pointer-events-none service-pinned-content" style="opacity: 0; display: none;">
-            <svg class="w-4 h-4 text-gray-400 group-hover:text-brand-accent transition-colors duration-300 flex-shrink-0" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg>
-            <span class="text-[10px] sm:text-xs font-bold tracking-widest uppercase text-gray-400 group-hover:text-brand-accent transition-colors duration-300 whitespace-nowrap" data-i18n="service_1_title">AI Automation</span>
-</a>
+        </a>
 <!-- Websites -->
-        <a href="code web.html" id="web-solutions-link" class="glass-effect p-8 rounded-custom glow-hover transition-all duration-500 group hover:-translate-y-2 reveal glow-card flex flex-col h-full no-underline text-inherit relative z-20" data-purpose="service-card" style="transition-property: all; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 500ms;">
+        <a href="code web.html" id="web-solutions-link" class="glass-effect p-8 rounded-custom glow-hover transition-all duration-500 group hover:-translate-y-2 reveal glow-card flex flex-col h-full no-underline text-inherit relative z-30 overflow-hidden" data-purpose="service-card" style="transition-property: all; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 500ms;">
           <div class="relative z-10 flex flex-col h-full service-content-inner">
             <div class="w-12 h-12 mb-8 flex items-center justify-center border border-brand-border rounded-custom group-hover:bg-brand-accent group-hover:border-brand-accent transition-colors duration-500 flex-shrink-0 service-icon-wrapper">
               <svg class="w-6 h-6 text-brand-accent group-hover:text-black" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg>
             </div>
-            <h4 class="text-2xl font-bold mb-4 tracking-tight" data-i18n="service_2_title">Modern Web Solutions</h4>
-            <p class="text-gray-400 leading-relaxed flex-grow service-desc" data-i18n="service_2_desc">Performance and user experience.</p>
+            <h4 class="text-2xl font-bold mb-4 tracking-tight drop-shadow-md" data-i18n="service_2_title">Modern Web Solutions</h4>
+            <p class="text-gray-400 leading-relaxed flex-grow service-desc drop-shadow-md" data-i18n="service_2_desc">Performance and user experience.</p>
             <div class="mt-8 flex items-center text-brand-accent font-medium text-sm group-hover:translate-x-2 transition-transform duration-300 service-explore">
               <span data-i18n="explore_more2">Explore solutions</span>
               <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M13 7l5 5m0 0l-5 5m5-5H6" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
             </div>
           </div>
-          <!-- Pinned minimal content -->
-          <div class="absolute inset-0 z-20 items-center justify-center gap-2 pointer-events-none service-pinned-content" style="opacity: 0; display: none;">
-            <svg class="w-4 h-4 text-gray-400 group-hover:text-brand-accent transition-colors duration-300 flex-shrink-0" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg>
-            <span class="text-[10px] sm:text-xs font-bold tracking-widest uppercase text-gray-400 group-hover:text-brand-accent transition-colors duration-300 whitespace-nowrap" data-i18n="service_2_title">Modern Web Solutions</span>
-          </div>
-</a>
+        </a>
 <!-- Video Production -->
-<a href="#" class="glass-effect p-8 rounded-custom glow-hover transition-all duration-500 group hover:-translate-y-2 reveal glow-card flex flex-col h-full no-underline text-inherit relative z-20" data-purpose="service-card" style="transition-property: all; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 500ms;">
+<a href="#" id="content-creation-link" class="glass-effect p-8 rounded-custom glow-hover transition-all duration-500 group hover:-translate-y-2 reveal glow-card flex flex-col h-full no-underline text-inherit relative z-30 overflow-hidden" data-purpose="service-card" style="transition-property: all; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 500ms;">
 <div class="relative z-10 flex flex-col h-full service-content-inner">
   <div class="w-12 h-12 mb-8 flex items-center justify-center border border-brand-border rounded-custom group-hover:bg-brand-accent group-hover:border-brand-accent transition-colors duration-500 flex-shrink-0 service-icon-wrapper">
   <svg class="w-6 h-6 text-brand-accent group-hover:text-black" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg>
   </div>
-  <h4 class="text-2xl font-bold mb-4 tracking-tight" data-i18n="service_3_title">Digital Content Creation</h4>
-  <p class="text-gray-400 leading-relaxed flex-grow service-desc" data-i18n="service_3_desc">Professional video and motion design.</p>
+  <h4 class="text-2xl font-bold mb-4 tracking-tight drop-shadow-md" data-i18n="service_3_title">Digital Content Creation</h4>
+  <p class="text-gray-400 leading-relaxed flex-grow service-desc drop-shadow-md" data-i18n="service_3_desc">Professional video and motion design.</p>
   <div class="mt-8 flex items-center text-brand-accent font-medium text-sm group-hover:translate-x-2 transition-transform duration-300 service-explore">
     <span data-i18n="explore_more3">Explore solutions</span>
     <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M13 7l5 5m0 0l-5 5m5-5H6" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
   </div>
 </div>
-          <!-- Pinned minimal content -->
-          <div class="absolute inset-0 z-20 items-center justify-center gap-2 pointer-events-none service-pinned-content" style="opacity: 0; display: none;">
-            <svg class="w-4 h-4 text-gray-400 group-hover:text-brand-accent transition-colors duration-300 flex-shrink-0" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg>
-            <span class="text-[10px] sm:text-xs font-bold tracking-widest uppercase text-gray-400 group-hover:text-brand-accent transition-colors duration-300 whitespace-nowrap" data-i18n="service_3_title">Digital Content Creation</span>
-          </div>
 </a>
 </div>
 </div>
@@ -397,7 +382,7 @@
 <div class="pt-12 border-t border-brand-border flex flex-col md:row items-center justify-between gap-6">
 <div class="flex items-center gap-2">
  <img alt="Aerflow Symbol"
-  class="h-6 w-auto" src="logos/monochrome-logo.png?v=1.1.4"/>
+  class="h-6 w-auto" src="logos/monochrome-logo.png?v=1.1.8"/>
 <span class="text-sm font-bold tracking-widest" data-i18n="footer_rights">AERFLOW © 2024</span>
 </div>
 <div class="flex gap-8 text-xs font-medium text-gray-500 tracking-widest uppercase">
@@ -422,4 +407,4 @@
   </defs>
 </svg>
 <!-- END: Premium Button Filters -->
-<script src="script.js?v=1.1.4"></script></body></html>
+<script src="script.js?v=1.1.8"></script></body></html>
