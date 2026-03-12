@@ -683,7 +683,8 @@ body {
     -webkit-backdrop-filter: blur(16px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 0 !important;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    /* Instant snap for layout properties, only transition cosmetic ones */
+    transition: background 0.3s ease, opacity 0.3s ease, backdrop-filter 0.3s ease !important;
 }
 
 /* Shared Pinned State Styling */
@@ -692,6 +693,7 @@ body {
     opacity: 0 !important;
     pointer-events: none !important;
     display: none !important;
+    transition: none !important; /* Hide immediately */
 }
 
 .is-pinned-desktop .service-pinned-content,
