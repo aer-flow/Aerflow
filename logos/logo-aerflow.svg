@@ -1,0 +1,24 @@
+<svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="2" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+    <linearGradient id="glass-grad" x1="50" y1="10" x2="50" y2="90" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#00D4FF" />
+      <stop offset="100%" stop-color="#0088AA" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Left Glass Wing -->
+  <path d="M 50 15 L 15 85 L 44 85 L 50 32 Z" fill="url(#glass-grad)" opacity="0.9" />
+  
+  <!-- Right Glass Wing -->
+  <path d="M 50 15 L 85 85 L 56 85 L 50 32 Z" fill="url(#glass-grad)" opacity="0.9" />
+  
+  <!-- Central Light Beam -->
+  <rect x="49" y="8" width="2" height="84" fill="white" filter="url(#glow)" />
+  
+  <!-- Sharp Core Link -->
+  <path d="M 50 15 L 44 85 L 56 85 Z" fill="#00D4FF" opacity="0.4" />
+</svg>
