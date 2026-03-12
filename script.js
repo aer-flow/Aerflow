@@ -248,22 +248,36 @@ document.addEventListener('DOMContentLoaded', () => {
   // Glowing Effect Logic (Vanilla JS adaptation)
   const initGlowingEffects = () => {
     const cards = document.querySelectorAll('.glow-card');
-    const mousePos = { x: -1000, y: -1000 }; // Start far away to avoid initial activation
+    const mousePos = { x: -1000, y: -1000 };
     const isTouchDevice = window.matchMedia('(hover: none)').matches;
-    const state = new Map(); // Store per-card state (current angle, active state)
+    const state = new Map();
 
     cards.forEach(card => {
-      // Inject the required DOM structure for the effect
       const glowContainer = document.createElement('div');
       glowContainer.className = 'glow-container';
-      glowContainer.innerHTML = '<div class="glow-content"></div>';
+      
+      if (isTouchDevice) {
+        // SVG based border highlight for mobile (100% reliable)
+        glowContainer.innerHTML = `
+          <svg class="glow-svg" width="100%" height="100%" style="position:absolute; inset:0; overflow:visible; pointer-events:none;">
+            <rect x="0" y="0" width="100%" height="100%" rx="12" fill="none" 
+                  stroke="currentColor" stroke-width="2" pathLength="100"
+                  class="text-brand-accent"
+                  style="stroke-dasharray: 20 80; stroke-dashoffset: 0; opacity: 0; transition: opacity 0.5s ease; filter: drop-shadow(0 0 4px currentColor);">
+            </rect>
+          </svg>`;
+      } else {
+        // CSS Mask based highlight for desktop
+        glowContainer.innerHTML = '<div class="glow-content"></div>';
+      }
+      
       card.prepend(glowContainer);
 
       state.set(card, {
         currentAngle: 0,
         targetAngle: 0,
         isActive: false,
-        element: glowContainer.querySelector('.glow-content')
+        element: isTouchDevice ? glowContainer.querySelector('rect') : glowContainer.querySelector('.glow-content')
       });
     });
 
@@ -288,49 +302,47 @@ document.addEventListener('DOMContentLoaded', () => {
       cards.forEach(card => {
         const s = state.get(card);
         const rect = card.getBoundingClientRect();
-        const { left, top, width, height } = rect;
         
         if (isTouchDevice) {
-          // Mobile: Toggle active based on being closest to center
-          // We add a threshold so it's not "always" one card if they are far away,
-          // but usually we want the most prominent one.
           const isBasicallyInView = rect.top < window.innerHeight && rect.bottom > 0;
           s.isActive = (card === closestCard) && isBasicallyInView && (minDist < window.innerHeight * 0.4);
           
           if (s.isActive) {
-            const cardCenterY = top + height / 2;
+            const cardCenterY = rect.top + rect.height / 2;
             const diffY = cardCenterY - viewportCenterY;
             
-            // Calculate angle based on vertical position relative to center
-            // As it moves through the center, the glow rotates.
-            // Mapping -300 to 300px to 0 to 360 degrees
-            const angle = (diffY / 300) * 180 + 90;
-            s.currentAngle = angle;
-            s.element.style.setProperty('--start', String(s.currentAngle));
+            // Map vertical position to SVG dash offset (0 to 100)
+            // As it moves through, the "dash" rotates around the rectangle
+            const offset = (diffY / 400) * 100;
+            s.element.style.strokeDashoffset = String(-offset);
+            s.element.style.opacity = '1';
+          } else {
+            s.element.style.opacity = '0';
           }
         } else {
-          // Desktop: Original mouse-based logic
           const proximity = 100;
           const inactiveZone = 0.7;
           
-          const centerX = left + width * 0.5;
-          const centerY = top + height * 0.5;
+          const centerX = rect.left + rect.width * 0.5;
+          const centerY = rect.top + rect.height * 0.5;
           const mouseX = mousePos.x;
           const mouseY = mousePos.y;
 
           const distFromCenter = Math.hypot(mouseX - centerX, mouseY - centerY);
-          const inactiveRadius = 0.5 * Math.min(width, height) * inactiveZone;
+          const inactiveRadius = 0.5 * Math.min(rect.width, rect.height) * inactiveZone;
 
           if (distFromCenter < inactiveRadius) {
             s.isActive = false;
           } else {
             s.isActive = (
-              mouseX > left - proximity &&
-              mouseX < left + width + proximity &&
-              mouseY > top - proximity &&
-              mouseY < top + height + proximity
+              mouseX > rect.left - proximity &&
+              mouseX < rect.left + rect.width + proximity &&
+              mouseY > rect.top - proximity &&
+              mouseY < rect.top + rect.height + proximity
             );
           }
+
+          s.element.style.setProperty('--active', s.isActive ? '1' : '0');
 
           if (s.isActive) {
             const target = (180 * Math.atan2(mouseY - centerY, mouseX - centerX)) / Math.PI + 90;
@@ -339,8 +351,6 @@ document.addEventListener('DOMContentLoaded', () => {
             s.element.style.setProperty('--start', String(s.currentAngle));
           }
         }
-
-        s.element.style.setProperty('--active', s.isActive ? '1' : '0');
       });
       requestAnimationFrame(updateGlow);
     };
