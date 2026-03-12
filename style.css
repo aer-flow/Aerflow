@@ -425,29 +425,23 @@ body {
               );
 }
 
-.glow-content::after {
-  content: "";
+.glow-container {
   position: absolute;
-  inset: calc(-1 * var(--glowingeffect-border-width));
+  inset: 0;
+  pointer-events: none;
+  z-index: 10;
   border-radius: inherit;
-  border: var(--glowingeffect-border-width) solid transparent;
-  background: var(--gradient) fixed;
-  
-  /* Robust border-wedging:
-     We use XOR to show only the intersection of the conic wedge and the border area.
-     By using a content-box mask and a conic highlight, the center (content-box) 
-     cancels out the highlight, leaving it only on the edges.
-  */
-  mask: linear-gradient(#000, #000) content-box, 
-        conic-gradient(from calc((var(--start) - var(--spread)) * 1deg), #00000000 0deg, #fff, #00000000 calc(var(--spread) * 2deg));
-  mask-composite: exclude;
-  -webkit-mask: linear-gradient(#000, #000) content-box, 
-                conic-gradient(from calc((var(--start) - var(--spread)) * 1deg), #00000000 0deg, #fff, #00000000 calc(var(--spread) * 2deg));
-  -webkit-mask-composite: xor;
-  
-  padding: var(--glowingeffect-border-width);
-  opacity: var(--active);
-  transition: opacity 0.3s ease;
+  overflow: visible;
+}
+
+/* We are moving to SVG strokes for the glow to ensure 100% reliability 
+   across all browsers and multi-color support without masking issues. */
+.glow-svg {
+  position: absolute;
+  inset: -1px; /* Slight bleed to cover the border exactly */
+  width: calc(100% + 2px);
+  height: calc(100% + 2px);
+  overflow: visible;
 }
 
 /* Ensure content is always above the glow effects */

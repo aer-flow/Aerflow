@@ -245,7 +245,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   initLampObserver();
 
-  // Glowing Effect Logic (Vanilla JS adaptation)
+  // Universal Glowing Effect Logic (SVG-based for 100% reliability)
   const initGlowingEffects = () => {
     const cards = document.querySelectorAll('.glow-card');
     const mousePos = { x: -1000, y: -1000 };
@@ -256,28 +256,48 @@ document.addEventListener('DOMContentLoaded', () => {
       const glowContainer = document.createElement('div');
       glowContainer.className = 'glow-container';
       
-      if (isTouchDevice) {
-        // SVG based border highlight for mobile (100% reliable)
-        glowContainer.innerHTML = `
-          <svg class="glow-svg" width="100%" height="100%" style="position:absolute; inset:0; overflow:visible; pointer-events:none;">
-            <rect x="0" y="0" width="100%" height="100%" rx="12" fill="none" 
-                  stroke="currentColor" stroke-width="2" pathLength="100"
-                  class="text-brand-accent"
-                  style="stroke-dasharray: 20 80; stroke-dashoffset: 0; opacity: 0; transition: opacity 0.5s ease; filter: drop-shadow(0 0 4px currentColor);">
-            </rect>
-          </svg>`;
-      } else {
-        // CSS Mask based highlight for desktop
-        glowContainer.innerHTML = '<div class="glow-content"></div>';
-      }
+      // Multi-color definition used by the SVG stroke
+      glowContainer.innerHTML = `
+        <svg class="glow-svg" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="glow-grad-${Math.random().toString(36).substr(2, 9)}" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#dd7bbb" />
+              <stop offset="25%" stop-color="#d79f1e" />
+              <stop offset="50%" stop-color="#5a922c" />
+              <stop offset="75%" stop-color="#4c7894" />
+              <stop offset="100%" stop-color="#dd7bbb" />
+            </linearGradient>
+          </defs>
+          <rect x="1" y="1" width="calc(100% - 2px)" height="calc(100% - 2px)" rx="12" 
+                fill="none" stroke="url(#glow-poly-grad)" stroke-width="2.5" pathLength="100"
+                style="stroke-dasharray: 20 80; stroke-dashoffset: 0; opacity: 0; transition: opacity 0.4s ease; filter: drop-shadow(0 0 3px rgba(221, 123, 187, 0.4));">
+          </rect>
+        </svg>`;
       
+      // Inject the gradient once globally if it doesn't exist to save memory
+      if (!document.getElementById('glow-poly-grad')) {
+        const svgDefs = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        svgDefs.style.position = 'absolute';
+        svgDefs.style.width = '0';
+        svgDefs.style.height = '0';
+        svgDefs.innerHTML = `
+          <defs>
+            <linearGradient id="glow-poly-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#dd7bbb" />
+              <stop offset="25%" stop-color="#d79f1e" />
+              <stop offset="50%" stop-color="#5a922c" />
+              <stop offset="75%" stop-color="#4c7894" />
+              <stop offset="100%" stop-color="#dd7bbb" />
+            </linearGradient>
+          </defs>`;
+        document.body.appendChild(svgDefs);
+      }
+
       card.prepend(glowContainer);
 
       state.set(card, {
         currentAngle: 0,
-        targetAngle: 0,
-        isActive: false,
-        element: isTouchDevice ? glowContainer.querySelector('rect') : glowContainer.querySelector('.glow-content')
+        element: glowContainer.querySelector('rect')
       });
     });
 
@@ -291,7 +311,6 @@ document.addEventListener('DOMContentLoaded', () => {
           const rect = card.getBoundingClientRect();
           const cardCenterY = rect.top + rect.height / 2;
           const distFromCenter = Math.abs(cardCenterY - viewportCenterY);
-          
           if (distFromCenter < minDist) {
             minDist = distFromCenter;
             closestCard = card;
@@ -305,14 +324,11 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if (isTouchDevice) {
           const isBasicallyInView = rect.top < window.innerHeight && rect.bottom > 0;
-          s.isActive = (card === closestCard) && isBasicallyInView && (minDist < window.innerHeight * 0.4);
+          const isActive = (card === closestCard) && isBasicallyInView && (minDist < window.innerHeight * 0.4);
           
-          if (s.isActive) {
+          if (isActive) {
             const cardCenterY = rect.top + rect.height / 2;
             const diffY = cardCenterY - viewportCenterY;
-            
-            // Map vertical position to SVG dash offset (0 to 100)
-            // As it moves through, the "dash" rotates around the rectangle
             const offset = (diffY / 400) * 100;
             s.element.style.strokeDashoffset = String(-offset);
             s.element.style.opacity = '1';
@@ -320,35 +336,31 @@ document.addEventListener('DOMContentLoaded', () => {
             s.element.style.opacity = '0';
           }
         } else {
-          const proximity = 100;
-          const inactiveZone = 0.7;
-          
-          const centerX = rect.left + rect.width * 0.5;
-          const centerY = rect.top + rect.height * 0.5;
+          // Desktop: Track mouse position
+          const padding = 100;
           const mouseX = mousePos.x;
           const mouseY = mousePos.y;
 
-          const distFromCenter = Math.hypot(mouseX - centerX, mouseY - centerY);
-          const inactiveRadius = 0.5 * Math.min(rect.width, rect.height) * inactiveZone;
+          const isActive = (
+            mouseX > rect.left - padding &&
+            mouseX < rect.right + padding &&
+            mouseY > rect.top - padding &&
+            mouseY < rect.bottom + padding
+          );
 
-          if (distFromCenter < inactiveRadius) {
-            s.isActive = false;
+          if (isActive) {
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            
+            // Calculate angle from center to mouse
+            const angle = Math.atan2(mouseY - centerY, mouseX - centerX) * (180 / Math.PI) + 90;
+            
+            // Map angle (-180 to 180) to stroke-dashoffset (0 to 100)
+            const offset = ((angle + 360) % 360) / 3.6;
+            s.element.style.strokeDashoffset = String(-offset);
+            s.element.style.opacity = '1';
           } else {
-            s.isActive = (
-              mouseX > rect.left - proximity &&
-              mouseX < rect.left + rect.width + proximity &&
-              mouseY > rect.top - proximity &&
-              mouseY < rect.top + rect.height + proximity
-            );
-          }
-
-          s.element.style.setProperty('--active', s.isActive ? '1' : '0');
-
-          if (s.isActive) {
-            const target = (180 * Math.atan2(mouseY - centerY, mouseX - centerX)) / Math.PI + 90;
-            const diff = ((target - s.currentAngle + 180) % 360) - 180;
-            s.currentAngle += diff * 0.15;
-            s.element.style.setProperty('--start', String(s.currentAngle));
+            s.element.style.opacity = '0';
           }
         }
       });
