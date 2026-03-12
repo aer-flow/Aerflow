@@ -221,12 +221,13 @@ document.addEventListener('DOMContentLoaded', () => {
       const distanceFromCenter = Math.abs(sectionCenter - viewportCenter);
       
       // Normalize progress (1 at center, 0 when far away)
-      // window.innerHeight serves as the falloff distance
-      const progress = Math.max(0, 1 - (distanceFromCenter / (window.innerHeight * 0.8)));
+      // Peak intensity at screen middle
+      const falloff = window.innerHeight * 0.4; // Reach 0 at 40% of screen height from center
+      const progress = Math.max(0, 1 - (distanceFromCenter / falloff));
       
       lampContainer.style.setProperty('--lamp-progress', progress.toFixed(3));
       
-      // Also keep is-active for legacy CSS or as a threshold trigger
+      // Threshold trigger
       if (progress > 0.01) {
         lampContainer.classList.add('is-active');
       } else {
