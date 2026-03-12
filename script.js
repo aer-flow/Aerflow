@@ -270,7 +270,7 @@ document.addEventListener('DOMContentLoaded', () => {
           </defs>
           <rect x="1" y="1" width="calc(100% - 2px)" height="calc(100% - 2px)" rx="12" 
                 fill="none" stroke="url(#glow-poly-grad)" stroke-width="2.5" pathLength="100"
-                style="stroke-dasharray: 20 80; stroke-dashoffset: 0; opacity: 0; transition: opacity 0.4s ease; filter: drop-shadow(0 0 3px rgba(221, 123, 187, 0.4));">
+                style="stroke-dasharray: 20 80; stroke-dashoffset: 0; opacity: 0; transition: opacity 0.2s ease; filter: drop-shadow(0 0 3px rgba(221, 123, 187, 0.4));">
           </rect>
         </svg>`;
       
@@ -352,11 +352,15 @@ document.addEventListener('DOMContentLoaded', () => {
             const centerX = rect.left + rect.width / 2;
             const centerY = rect.top + rect.height / 2;
             
-            // Calculate angle from center to mouse
-            const angle = Math.atan2(mouseY - centerY, mouseX - centerX) * (180 / Math.PI) + 90;
+            // Calculate target angle (0 to 360)
+            const target = (Math.atan2(mouseY - centerY, mouseX - centerX) * (180 / Math.PI) + 450) % 360;
             
-            // Map angle (-180 to 180) to stroke-dashoffset (0 to 100)
-            const offset = ((angle + 360) % 360) / 3.6;
+            // Smooth interpolation
+            const diff = ((target - s.currentAngle + 180) % 360) - 180;
+            s.currentAngle += diff * 0.15;
+            
+            // Map angle to stroke-dashoffset (0 to 100)
+            const offset = (s.currentAngle / 360) * 100;
             s.element.style.strokeDashoffset = String(-offset);
             s.element.style.opacity = '1';
           } else {
