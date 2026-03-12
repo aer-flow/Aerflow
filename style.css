@@ -631,19 +631,51 @@ body {
     width: 100%;
 }
 
+/* Individual Service Card Morphing into Fixed Bar */
+.service-placeholder {
+    width: 100%;
+}
+
+/* Desktop Wrapper Pinning */
+#services-grid-wrapper.is-pinned-desktop {
+    position: fixed;
+    top: 80px;
+    left: 0;
+    width: 100%;
+    z-index: 40;
+    background: rgba(10, 10, 12, 0.95);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+#services-grid-wrapper.is-pinned-desktop #services-grid {
+    display: flex;
+    max-width: 1024px;
+    margin: 0 auto;
+    height: 56px;
+    align-items: center;
+    padding: 0 24px;
+}
+
+#services-grid-wrapper.is-pinned-desktop .glow-card {
+    flex: 1;
+    height: 100% !important;
+    min-height: 0 !important;
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+}
+
+/* Mobile Individual Pinning */
 .glow-card.is-pinned {
     position: fixed;
     top: 80px;
     z-index: 40;
     overflow: hidden;
-    
-    /* Calculate slot position (assuming 3 cards) */
-    width: calc(min(100%, 1024px) / 3) !important;
-    left: calc(50% - (min(100%, 1024px) / 2) + (var(--slot-index) * (min(100%, 1024px) / 3))) !important;
-    
-    /* Snap to fixed height */
+    width: 33.333% !important;
+    left: calc(var(--slot-index) * 33.333%) !important;
     height: 56px !important;
-    
     background: rgba(10, 10, 12, 0.95);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
@@ -652,45 +684,43 @@ body {
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
-/* On mobile, adjust width calculation */
-@media (max-width: 1023px) {
-    .glow-card.is-pinned {
-        width: 33.333% !important;
-        left: calc(var(--slot-index) * 33.333%) !important;
-    }
-}
-
+/* Shared Pinned State Styling */
+.is-pinned-desktop .service-content-inner,
 .glow-card.is-pinned .service-content-inner {
     opacity: 0;
     pointer-events: none;
     transform: translateY(-10px);
-    transition: all 0.2s ease;
+    display: none;
 }
 
+.is-pinned-desktop .service-pinned-content,
 .glow-card.is-pinned .service-pinned-content {
     opacity: 1 !important;
     display: flex !important;
-    transform: translateY(0);
     position: absolute;
     inset: 0;
     align-items: center;
     justify-content: center;
     pointer-events: none;
-    transition: all 0.3s ease 0.1s;
 }
 
 /* Icon only in pinned state */
+.is-pinned-desktop .service-pinned-content span,
 .glow-card.is-pinned .service-pinned-content span {
     display: none !important;
 }
 
+.is-pinned-desktop .spline-bg,
+.is-pinned-desktop .glow-container,
+.is-pinned-desktop .service-explore,
 .glow-card.is-pinned .spline-bg,
 .glow-card.is-pinned .glow-container,
 .glow-card.is-pinned .service-explore {
     opacity: 0 !important;
 }
 
-/* Simple separator between pinned cards */
+/* Simple separator */
+#services-grid-wrapper.is-pinned-desktop .glow-card:not(:last-child)::after,
 .glow-card.is-pinned:not(:last-child)::after {
     content: '';
     position: absolute;
@@ -700,5 +730,5 @@ body {
     width: 1px;
     height: 24px;
     background: rgba(255, 255, 255, 0.1);
-    opacity: 1;
+    z-index: 50;
 }

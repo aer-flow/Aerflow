@@ -603,27 +603,46 @@ document.addEventListener('DOMContentLoaded', () => {
     const updateCards = () => {
       const isMobile = window.innerWidth < 1024;
       
+      if (!isMobile) {
+        // Desktop: Pin the entire wrapper together for stability
+        const rect = gridWrapper.getBoundingClientRect();
+        const scrollPastNav = navHeight - rect.top;
+
+        if (scrollPastNav >= 0) {
+          if (!gridWrapper.classList.contains('is-pinned-desktop')) {
+            gridWrapper.classList.add('is-pinned-desktop');
+          }
+        } else {
+          gridWrapper.classList.remove('is-pinned-desktop');
+        }
+        
+        // Clean up any mobile pinned states if resizing back to desktop
+        cards.forEach(card => {
+          card.classList.remove('is-pinned');
+          placeholders.get(card).style.display = 'none';
+        });
+        return;
+      }
+
+      // Mobile: Individual pinning for the 'collection' effect
+      gridWrapper.classList.remove('is-pinned-desktop');
       cards.forEach((card, index) => {
         const p = placeholders.get(card);
         const trackingEl = card.classList.contains('is-pinned') ? p : card;
         const rect = trackingEl.getBoundingClientRect();
         
-        // How far past the sticky threshold (navHeight) this card has scrolled
         const scrollPastNav = navHeight - rect.top;
 
         if (scrollPastNav >= 0) {
           if (!card.classList.contains('is-pinned')) {
-            // Pin the card
             const currentHeight = card.offsetHeight;
             p.style.height = `${currentHeight}px`;
             p.style.display = 'block';
             card.classList.add('is-pinned');
-            // Assign slot index for CSS positioning
             card.style.setProperty('--slot-index', index);
           }
         } else {
           if (card.classList.contains('is-pinned')) {
-            // Unpin the card
             card.classList.remove('is-pinned');
             p.style.display = 'none';
             card.style.removeProperty('--slot-index');
