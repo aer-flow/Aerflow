@@ -449,15 +449,20 @@ body {
     --active: 0.15; /* Subtle constant glow on mobile */
   }
   .glow-card .glow-content::after {
-    /* Override complex intersecting masks which break on iOS/WebKit and flood the card.
-       Instead, use a simple linear-gradient mask that only paints the border area.
-       The inner transparent part masks out the center. */
-    mask-image: linear-gradient(#fff 0 0);
-    mask-clip: border-box;
+    /* Industry standard approach for hollowing out gradients on WebKit (iOS Safari) */
+    /* We use two masks: one for the padding box and one for the border box.
+       By excluding the padding box from the border box, we leave only the border visible. */
+    mask: linear-gradient(#fff 0 0) padding-box, 
+          linear-gradient(#fff 0 0) border-box;
     mask-composite: exclude;
-    -webkit-mask-image: linear-gradient(#fff 0 0);
-    -webkit-mask-clip: border-box;
-    -webkit-mask-composite: xor;
+    
+    -webkit-mask: linear-gradient(#fff 0 0) padding-box, 
+                  linear-gradient(#fff 0 0) border-box;
+    -webkit-mask-composite: destination-out;
+    
+    /* Ensure the background is visible only in the border area */
+    background: var(--gradient) fixed;
+    border-color: transparent;
   }
 }
 /* 6. Hero Text Shutter Animation */
