@@ -2,6 +2,7 @@ const translations = {
   en: {
     nav_solutions: "Solutions",
     nav_philosophy: "Philosophy",
+    nav_portfolio: "Portfolio",
     nav_contact: "Contact",
     nav_get_started: "Get Started",
     hero_badge: "Next Generation AI Integration",
@@ -60,6 +61,7 @@ const translations = {
   ro: {
     nav_solutions: "Servicii",
     nav_philosophy: "Metodologie",
+    nav_portfolio: "Portofoliu",
     nav_contact: "Contact",
     nav_get_started: "Începe Acum",
     hero_badge: "Viitorul Dezvoltării Web",
