@@ -268,55 +268,79 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     const updateGlow = () => {
+      const viewportCenterY = window.innerHeight / 2;
+      let closestCard = null;
+      let minDist = Infinity;
+
+      if (isTouchDevice) {
+        cards.forEach(card => {
+          const rect = card.getBoundingClientRect();
+          const cardCenterY = rect.top + rect.height / 2;
+          const distFromCenter = Math.abs(cardCenterY - viewportCenterY);
+          
+          if (distFromCenter < minDist) {
+            minDist = distFromCenter;
+            closestCard = card;
+          }
+        });
+      }
+
       cards.forEach(card => {
         const s = state.get(card);
         const rect = card.getBoundingClientRect();
         const { left, top, width, height } = rect;
-        const proximity = 100; // Hardcoded from React default or proximity prop
-        const inactiveZone = 0.7; // Hardcoded
         
-        const centerX = left + width * 0.5;
-        const centerY = top + height * 0.5;
-        
-        const mouseX = mousePos.x;
-        const mouseY = mousePos.y;
-
-        const distFromCenter = Math.hypot(mouseX - centerX, mouseY - centerY);
-        const inactiveRadius = 0.5 * Math.min(width, height) * inactiveZone;
-
-        // Inactive zone check
-        if (distFromCenter < inactiveRadius) {
-          s.isActive = false;
+        if (isTouchDevice) {
+          // Mobile: Toggle active based on being closest to center
+          // We add a threshold so it's not "always" one card if they are far away,
+          // but usually we want the most prominent one.
+          const isBasicallyInView = rect.top < window.innerHeight && rect.bottom > 0;
+          s.isActive = (card === closestCard) && isBasicallyInView && (minDist < window.innerHeight * 0.4);
+          
+          if (s.isActive) {
+            const cardCenterY = top + height / 2;
+            const diffY = cardCenterY - viewportCenterY;
+            
+            // Calculate angle based on vertical position relative to center
+            // As it moves through the center, the glow rotates.
+            // Mapping -300 to 300px to 0 to 360 degrees
+            const angle = (diffY / 300) * 180 + 90;
+            s.currentAngle = angle;
+            s.element.style.setProperty('--start', String(s.currentAngle));
+          }
         } else {
-          // Proximity check
-          s.isActive = (
-            mouseX > left - proximity &&
-            mouseX < left + width + proximity &&
-            mouseY > top - proximity &&
-            mouseY < top + height + proximity
-          );
+          // Desktop: Original mouse-based logic
+          const proximity = 100;
+          const inactiveZone = 0.7;
+          
+          const centerX = left + width * 0.5;
+          const centerY = top + height * 0.5;
+          const mouseX = mousePos.x;
+          const mouseY = mousePos.y;
+
+          const distFromCenter = Math.hypot(mouseX - centerX, mouseY - centerY);
+          const inactiveRadius = 0.5 * Math.min(width, height) * inactiveZone;
+
+          if (distFromCenter < inactiveRadius) {
+            s.isActive = false;
+          } else {
+            s.isActive = (
+              mouseX > left - proximity &&
+              mouseX < left + width + proximity &&
+              mouseY > top - proximity &&
+              mouseY < top + height + proximity
+            );
+          }
+
+          if (s.isActive) {
+            const target = (180 * Math.atan2(mouseY - centerY, mouseX - centerX)) / Math.PI + 90;
+            const diff = ((target - s.currentAngle + 180) % 360) - 180;
+            s.currentAngle += diff * 0.15;
+            s.element.style.setProperty('--start', String(s.currentAngle));
+          }
         }
 
         s.element.style.setProperty('--active', s.isActive ? '1' : '0');
-
-        if (s.isActive) {
-          // On touch devices, we might want a static or no angle calculation 
-          // to prevent the "spinning cone" effect during scrolling.
-          if (isTouchDevice) {
-            // Option: set a static angle or just don't update if not actively touching
-            // For now, let's keep it static on mobile to focus on the edge highlight
-            s.currentAngle = 0; 
-          } else {
-            // Angle calculation for hover-capable devices
-            const target = (180 * Math.atan2(mouseY - centerY, mouseX - centerX)) / Math.PI + 90;
-            
-            // Smooth interpolation (Lerp)
-            const diff = ((target - s.currentAngle + 180) % 360) - 180;
-            s.currentAngle += diff * 0.15; // Speed factor (adjust as needed)
-          }
-          
-          s.element.style.setProperty('--start', String(s.currentAngle));
-        }
       });
       requestAnimationFrame(updateGlow);
     };

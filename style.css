@@ -444,25 +444,6 @@ body {
   transition: opacity 0.3s ease;
 }
 
-/* Static Glow for Mobile */
-@media (hover: none) {
-  .glow-content::after {
-    background: var(--gradient);
-    background-attachment: scroll;
-    inset: 0;
-    
-    /* Create a permanent 1.5px border mask for mobile */
-    /* This uses two masks: one for the full area, one for the center to subtract it */
-    mask: linear-gradient(#fff, #fff) content-box, linear-gradient(#fff, #fff);
-    mask-composite: exclude;
-    -webkit-mask: linear-gradient(#fff, #fff) content-box, linear-gradient(#fff, #fff);
-    -webkit-mask-composite: xor;
-    padding: var(--glowingeffect-border-width);
-    
-    opacity: var(--active);
-  }
-}
-
 /* Ensure content is always above the glow effects */
 .glow-card .service-content-inner {
     position: relative;
