@@ -445,24 +445,24 @@ body {
 
 /* Static Glow for Mobile */
 @media (hover: none) {
-  .glow-card .glow-content {
-    --active: 0.15; /* Subtle constant glow on mobile */
-  }
-  .glow-card .glow-content::after {
-    /* Industry standard approach for hollowing out gradients on WebKit (iOS Safari) */
-    /* We use two masks: one for the padding box and one for the border box.
-       By excluding the padding box from the border box, we leave only the border visible. */
-    mask: linear-gradient(#fff 0 0) padding-box, 
-          linear-gradient(#fff 0 0) border-box;
-    mask-composite: exclude;
+  .glow-content::after {
+    /* Bulletproof method for mobile: layer backgrounds instead of masking.
+       Layer 1: Solid black, clipped to padding-box (the inside).
+       Layer 2: The gradient, clipped to border-box (the outside). */
+    background: linear-gradient(#0a0a0b, #0a0a0b) padding-box,
+                var(--gradient) border-box;
+    background-clip: padding-box, border-box;
+    background-origin: border-box;
     
-    -webkit-mask: linear-gradient(#fff 0 0) padding-box, 
-                  linear-gradient(#fff 0 0) border-box;
-    -webkit-mask-composite: destination-out;
-    
-    /* Ensure the background is visible only in the border area */
-    background: var(--gradient) fixed;
-    border-color: transparent;
+    /* Disable all masks which are prone to failure on mobile WebKit */
+    mask: none;
+    -webkit-mask: none;
+    mask-image: none;
+    -webkit-mask-image: none;
+
+    /* Ensure transparency works as intended with --active */
+    opacity: var(--active);
+    border: var(--glowingeffect-border-width) solid transparent;
   }
 }
 /* 6. Hero Text Shutter Animation */
