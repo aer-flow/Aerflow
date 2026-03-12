@@ -446,30 +446,19 @@ body {
 /* Static Glow for Mobile */
 @media (hover: none) {
   .glow-content::after {
-    /* Set the gradient as the background of the container itself on mobile */
-    /* and disable the fixed attachment which glitches during scroll */
     background: var(--gradient);
     background-attachment: scroll;
     inset: 0;
     
-    /* Remove all buggy masking logic */
-    mask: none;
-    -webkit-mask: none;
-    mask-image: none;
-    -webkit-mask-image: none;
+    /* Create a permanent 1.5px border mask for mobile */
+    /* This uses two masks: one for the full area, one for the center to subtract it */
+    mask: linear-gradient(#fff, #fff) content-box, linear-gradient(#fff, #fff);
+    mask-composite: exclude;
+    -webkit-mask: linear-gradient(#fff, #fff) content-box, linear-gradient(#fff, #fff);
+    -webkit-mask-composite: xor;
+    padding: var(--glowingeffect-border-width);
+    
     opacity: var(--active);
-  }
-
-  .glow-mask {
-    position: absolute;
-    /* This creates the 1.5px border by covering the center */
-    inset: var(--glowingeffect-border-width);
-    border-radius: inherit;
-    /* Background set to transparent to avoid 'black box' covering content */
-    background: transparent; 
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    z-index: 1;
   }
 }
 

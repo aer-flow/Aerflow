@@ -260,13 +260,6 @@ document.addEventListener('DOMContentLoaded', () => {
         isActive: false,
         element: glowContainer.querySelector('.glow-content')
       });
-
-      // On touch devices, inject a physical mask element to bypass buggy CSS masks
-      if (isTouchDevice) {
-        const mask = document.createElement('div');
-        mask.className = 'glow-mask';
-        state.get(card).element.appendChild(mask);
-      }
     });
 
     const updateGlow = () => {
