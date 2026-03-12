@@ -635,21 +635,21 @@ body {
     position: fixed;
     top: 80px;
     z-index: 40;
-    transition: none !important;
     overflow: hidden;
     
     /* Calculate slot position (assuming 3 cards) */
     width: calc(min(100%, 1024px) / 3) !important;
     left: calc(50% - (min(100%, 1024px) / 2) + (var(--slot-index) * (min(100%, 1024px) / 3))) !important;
     
-    /* Morph height */
-    height: max(56px, calc(var(--start-height, 400px) - (var(--start-height, 400px) - 56px) * var(--scroll-progress, 0)));
+    /* Snap to fixed height */
+    height: 56px !important;
     
-    background: rgba(10, 10, 12, max(0.85, var(--scroll-progress, 1)));
-    backdrop-filter: blur(calc(16px * var(--scroll-progress, 1)));
-    -webkit-backdrop-filter: blur(calc(16px * var(--scroll-progress, 1)));
-    border-bottom: 1px solid rgba(255, 255, 255, calc(0.08 * var(--scroll-progress, 1)));
-    border-radius: calc(12px * (1 - var(--scroll-progress, 0))) !important;
+    background: rgba(10, 10, 12, 0.95);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 0 !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
 /* On mobile, adjust width calculation */
@@ -657,38 +657,37 @@ body {
     .glow-card.is-pinned {
         width: 33.333% !important;
         left: calc(var(--slot-index) * 33.333%) !important;
-        height: max(56px, calc(300px - (300px - 56px) * var(--scroll-progress, 0)));
     }
 }
 
 .glow-card.is-pinned .service-content-inner {
-    opacity: calc(1 - var(--scroll-progress, 0) * 2);
-    width: 100%;
-    transform: translateY(calc(var(--scroll-progress, 0) * -20px));
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-10px);
+    transition: all 0.2s ease;
 }
 
 .glow-card.is-pinned .service-pinned-content {
-    opacity: calc((var(--scroll-progress, 0) - 0.5) * 2) !important;
+    opacity: 1 !important;
     display: flex !important;
-    transform: translateY(calc((1 - var(--scroll-progress, 0)) * 20px));
+    transform: translateY(0);
     position: absolute;
     inset: 0;
     align-items: center;
     justify-content: center;
-    gap: 0.5rem;
     pointer-events: none;
-    padding: 0 !important;
-    margin: 0 !important;
+    transition: all 0.3s ease 0.1s;
 }
 
+/* Icon only in pinned state */
 .glow-card.is-pinned .service-pinned-content span {
-    font-size: min(10px, 2.5vw);
+    display: none !important;
 }
 
 .glow-card.is-pinned .spline-bg,
 .glow-card.is-pinned .glow-container,
 .glow-card.is-pinned .service-explore {
-    opacity: calc(1 - var(--scroll-progress, 0) * 2) !important;
+    opacity: 0 !important;
 }
 
 /* Simple separator between pinned cards */
@@ -700,6 +699,6 @@ body {
     transform: translateY(-50%);
     width: 1px;
     height: 24px;
-    background: rgba(255, 255, 255, calc(0.08 * (var(--scroll-progress, 0))));
-    opacity: max(0, calc((var(--scroll-progress, 0) - 0.8) * 5));
+    background: rgba(255, 255, 255, 0.1);
+    opacity: 1;
 }

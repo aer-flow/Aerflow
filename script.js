@@ -618,21 +618,14 @@ document.addEventListener('DOMContentLoaded', () => {
             p.style.height = `${currentHeight}px`;
             p.style.display = 'block';
             card.classList.add('is-pinned');
-            card.style.setProperty('--start-height', `${currentHeight}px`);
             // Assign slot index for CSS positioning
             card.style.setProperty('--slot-index', index);
           }
-
-          let progress = scrollPastNav / scrollDistance;
-          progress = Math.max(0, Math.min(1, progress));
-          card.style.setProperty('--scroll-progress', progress);
         } else {
           if (card.classList.contains('is-pinned')) {
             // Unpin the card
             card.classList.remove('is-pinned');
             p.style.display = 'none';
-            card.style.removeProperty('--scroll-progress');
-            card.style.removeProperty('--start-height');
             card.style.removeProperty('--slot-index');
           }
         }
