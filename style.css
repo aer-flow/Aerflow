@@ -465,12 +465,18 @@ body {
     /* This creates the 1.5px border by covering the center */
     inset: var(--glowingeffect-border-width);
     border-radius: inherit;
-    /* Match the glass effect of the parent card precisely */
-    background: rgba(10, 10, 12, 0.98); 
+    /* Background set to transparent to avoid 'black box' covering content */
+    background: transparent; 
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     z-index: 1;
   }
+}
+
+/* Ensure content is always above the glow effects */
+.glow-card .service-content-inner {
+    position: relative;
+    z-index: 10;
 }
 /* 6. Hero Text Shutter Animation */
 .hero-text-container {
