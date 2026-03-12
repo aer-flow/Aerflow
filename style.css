@@ -432,14 +432,20 @@ body {
   border-radius: inherit;
   border: var(--glowingeffect-border-width) solid transparent;
   background: var(--gradient) fixed;
-  mask-clip: padding-box, border-box;
-  mask-composite: intersect;
-  -webkit-mask-clip: padding-box, border-box;
-  -webkit-mask-composite: destination-in;
-  mask-image: linear-gradient(#0000, #0000), 
-              conic-gradient(from calc((var(--start) - var(--spread)) * 1deg), #00000000 0deg, #fff, #00000000 calc(var(--spread) * 2deg));
-  -webkit-mask-image: linear-gradient(#0000, #0000), 
-                      conic-gradient(from calc((var(--start) - var(--spread)) * 1deg), #00000000 0deg, #fff, #00000000 calc(var(--spread) * 2deg));
+  
+  /* Robust border-wedging:
+     We use XOR to show only the intersection of the conic wedge and the border area.
+     By using a content-box mask and a conic highlight, the center (content-box) 
+     cancels out the highlight, leaving it only on the edges.
+  */
+  mask: linear-gradient(#000, #000) content-box, 
+        conic-gradient(from calc((var(--start) - var(--spread)) * 1deg), #00000000 0deg, #fff, #00000000 calc(var(--spread) * 2deg));
+  mask-composite: exclude;
+  -webkit-mask: linear-gradient(#000, #000) content-box, 
+                conic-gradient(from calc((var(--start) - var(--spread)) * 1deg), #00000000 0deg, #fff, #00000000 calc(var(--spread) * 2deg));
+  -webkit-mask-composite: xor;
+  
+  padding: var(--glowingeffect-border-width);
   opacity: var(--active);
   transition: opacity 0.3s ease;
 }
