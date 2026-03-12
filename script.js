@@ -215,19 +215,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const handleScroll = () => {
       const rect = lampSection.getBoundingClientRect();
       const viewportCenter = window.innerHeight / 2;
-      const sectionCenter = rect.top + rect.height / 2;
       
-      // Calculate distance from center (0 = perfectly centered)
-      const distanceFromCenter = Math.abs(sectionCenter - viewportCenter);
+      // Target the visual lamp center (top of section + some offset for the beams)
+      const lampVisualCenter = rect.top + 150; // Offset to roughly where the horizontal line is
       
-      // Normalize progress (1 at center, 0 when far away)
-      // Peak intensity at screen middle
-      const falloff = window.innerHeight * 0.4; // Reach 0 at 40% of screen height from center
+      const distanceFromCenter = Math.abs(lampVisualCenter - viewportCenter);
+      
+      // Stricter falloff: Full open at center, closes quickly when away
+      const falloff = window.innerHeight * 0.3; 
       const progress = Math.max(0, 1 - (distanceFromCenter / falloff));
       
       lampContainer.style.setProperty('--lamp-progress', progress.toFixed(3));
       
-      // Threshold trigger
       if (progress > 0.01) {
         lampContainer.classList.add('is-active');
       } else {
