@@ -591,7 +591,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const placeholders = new Map();
     const wrapperPlaceholder = document.createElement('div');
     wrapperPlaceholder.className = 'wrapper-placeholder';
-    wrapperPlaceholder.style.display = 'none';
+    // Always in flow but height 0 initially to prevent 'none' issues
+    wrapperPlaceholder.style.cssText = 'height: 0; overflow: hidden; display: block; width: 100%; pointer-events: none;';
     gridWrapper.parentNode.insertBefore(wrapperPlaceholder, gridWrapper);
 
     cards.forEach(card => {
@@ -609,30 +610,30 @@ document.addEventListener('DOMContentLoaded', () => {
       const isMobile = window.innerWidth < 1024;
       
       if (!isMobile) {
-        // Desktop: Pin the entire wrapper together for stability
+        // Desktop: Always track the sentinel placeholder for stability
+        const rect = wrapperPlaceholder.getBoundingClientRect();
         const isPinned = gridWrapper.classList.contains('is-pinned-desktop');
-        const trackingEl = isPinned ? wrapperPlaceholder : gridWrapper;
-        const rect = trackingEl.getBoundingClientRect();
         
-        // Threshold check
         if (rect.top <= navHeight) {
           if (!isPinned) {
+            // Store the height before pinning transforms the element
             const h = gridWrapper.offsetHeight;
             wrapperPlaceholder.style.height = `${h}px`;
-            wrapperPlaceholder.style.display = 'block';
             gridWrapper.classList.add('is-pinned-desktop');
           }
         } else {
           if (isPinned) {
             gridWrapper.classList.remove('is-pinned-desktop');
-            wrapperPlaceholder.style.display = 'none';
+            wrapperPlaceholder.style.height = '0';
           }
         }
         
         // Clean up mobile pinned states
         cards.forEach(card => {
-          card.classList.remove('is-pinned');
-          placeholders.get(card).style.display = 'none';
+          if (card.classList.contains('is-pinned')) {
+            card.classList.remove('is-pinned');
+            placeholders.get(card).style.display = 'none';
+          }
         });
         return;
       }
