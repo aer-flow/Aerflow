@@ -589,6 +589,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Create a placeholder for each card to maintain layout when pinned
     const placeholders = new Map();
+    const wrapperPlaceholder = document.createElement('div');
+    wrapperPlaceholder.className = 'wrapper-placeholder';
+    wrapperPlaceholder.style.display = 'none';
+    gridWrapper.parentNode.insertBefore(wrapperPlaceholder, gridWrapper);
+
     cards.forEach(card => {
       const p = document.createElement('div');
       p.className = 'service-placeholder';
@@ -605,18 +610,26 @@ document.addEventListener('DOMContentLoaded', () => {
       
       if (!isMobile) {
         // Desktop: Pin the entire wrapper together for stability
-        const rect = gridWrapper.getBoundingClientRect();
-        const scrollPastNav = navHeight - rect.top;
-
-        if (scrollPastNav >= 0) {
-          if (!gridWrapper.classList.contains('is-pinned-desktop')) {
+        const isPinned = gridWrapper.classList.contains('is-pinned-desktop');
+        const trackingEl = isPinned ? wrapperPlaceholder : gridWrapper;
+        const rect = trackingEl.getBoundingClientRect();
+        
+        // Threshold check
+        if (rect.top <= navHeight) {
+          if (!isPinned) {
+            const h = gridWrapper.offsetHeight;
+            wrapperPlaceholder.style.height = `${h}px`;
+            wrapperPlaceholder.style.display = 'block';
             gridWrapper.classList.add('is-pinned-desktop');
           }
         } else {
-          gridWrapper.classList.remove('is-pinned-desktop');
+          if (isPinned) {
+            gridWrapper.classList.remove('is-pinned-desktop');
+            wrapperPlaceholder.style.display = 'none';
+          }
         }
         
-        // Clean up any mobile pinned states if resizing back to desktop
+        // Clean up mobile pinned states
         cards.forEach(card => {
           card.classList.remove('is-pinned');
           placeholders.get(card).style.display = 'none';

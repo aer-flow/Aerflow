@@ -632,7 +632,7 @@ body {
 }
 
 /* Individual Service Card Morphing into Fixed Bar */
-.service-placeholder {
+.service-placeholder, .wrapper-placeholder {
     width: 100%;
 }
 
@@ -647,6 +647,8 @@ body {
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    margin: 0 !important;
+    padding: 0 !important;
 }
 
 #services-grid-wrapper.is-pinned-desktop #services-grid {
