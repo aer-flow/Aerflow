@@ -448,11 +448,6 @@ body {
   .glow-card .glow-content {
     --active: 0.15; /* Subtle constant glow on mobile */
   }
-  .glow-card .glow-content::after {
-    mask-image: none;
-    -webkit-mask-image: none;
-    border-color: rgba(255, 255, 255, 0.1);
-  }
 }
 /* 6. Hero Text Shutter Animation */
 .hero-text-container {
