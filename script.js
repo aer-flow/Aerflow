@@ -256,25 +256,16 @@ document.addEventListener('DOMContentLoaded', () => {
       const glowContainer = document.createElement('div');
       glowContainer.className = 'glow-container';
       
-      // Multi-color definition used by the SVG stroke
+      // Using original parameters from Demo: spread=40, proximity=64, inactiveZone=0.01
+      // spread 40/360 * 100 = ~11
       glowContainer.innerHTML = `
         <svg class="glow-svg" preserveAspectRatio="none">
-          <defs>
-            <linearGradient id="glow-grad-${Math.random().toString(36).substr(2, 9)}" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stop-color="#dd7bbb" />
-              <stop offset="25%" stop-color="#d79f1e" />
-              <stop offset="50%" stop-color="#5a922c" />
-              <stop offset="75%" stop-color="#4c7894" />
-              <stop offset="100%" stop-color="#dd7bbb" />
-            </linearGradient>
-          </defs>
           <rect x="1" y="1" width="calc(100% - 2px)" height="calc(100% - 2px)" rx="12" 
                 fill="none" stroke="url(#glow-poly-grad)" stroke-width="2.5" pathLength="100"
-                style="stroke-dasharray: 20 80; stroke-dashoffset: 0; opacity: 0; transition: opacity 0.2s ease; filter: drop-shadow(0 0 3px rgba(221, 123, 187, 0.4));">
+                style="stroke-dasharray: 11 89; stroke-dashoffset: 0; opacity: 0; transition: opacity 0.3s ease; filter: drop-shadow(0 0 3px rgba(221, 123, 187, 0.4));">
           </rect>
         </svg>`;
       
-      // Inject the gradient once globally if it doesn't exist to save memory
       if (!document.getElementById('glow-poly-grad')) {
         const svgDefs = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
         svgDefs.style.position = 'absolute';
@@ -336,30 +327,31 @@ document.addEventListener('DOMContentLoaded', () => {
             s.element.style.opacity = '0';
           }
         } else {
-          // Desktop: Track mouse position
-          const padding = 100;
+          // Precise Desktop Logic from original component
+          const proximity = 64;
+          const inactiveZone = 0.01;
           const mouseX = mousePos.x;
           const mouseY = mousePos.y;
 
-          const isActive = (
-            mouseX > rect.left - padding &&
-            mouseX < rect.right + padding &&
-            mouseY > rect.top - padding &&
-            mouseY < rect.bottom + padding
-          );
+          const center = [rect.left + rect.width * 0.5, rect.top + rect.height * 0.5];
+          const distFromCenter = Math.hypot(mouseX - center[0], mouseY - center[1]);
+          const inactiveRadius = 0.5 * Math.min(rect.width, rect.height) * inactiveZone;
+
+          let isActive = false;
+          if (distFromCenter > inactiveRadius) {
+            isActive = (
+              mouseX > rect.left - proximity &&
+              mouseX < rect.right + proximity &&
+              mouseY > rect.top - proximity &&
+              mouseY < rect.bottom + proximity
+            );
+          }
 
           if (isActive) {
-            const centerX = rect.left + rect.width / 2;
-            const centerY = rect.top + rect.height / 2;
-            
-            // Calculate target angle (0 to 360)
-            const target = (Math.atan2(mouseY - centerY, mouseX - centerX) * (180 / Math.PI) + 450) % 360;
-            
-            // Smooth interpolation
-            const diff = ((target - s.currentAngle + 180) % 360) - 180;
-            s.currentAngle += diff * 0.15;
-            
-            // Map angle to stroke-dashoffset (0 to 100)
+            const targetAngle = (Math.atan2(mouseY - center[1], mouseX - center[0]) * (180 / Math.PI) + 450) % 360;
+            const angleDiff = ((targetAngle - s.currentAngle + 180) % 360) - 180;
+            s.currentAngle += angleDiff * 0.15; // Smooth interpolation
+
             const offset = (s.currentAngle / 360) * 100;
             s.element.style.strokeDashoffset = String(-offset);
             s.element.style.opacity = '1';
