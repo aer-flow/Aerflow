@@ -317,6 +317,7 @@ body {
 .lamp-container {
   min-height: 100vh;
   transition: all 0.3s ease-in-out;
+  z-index: 45; /* Ensure it stays above pinned cards (z-40) but below nav (z-50) */
 }
 
 .lamp-beam {
