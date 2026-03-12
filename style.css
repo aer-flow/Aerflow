@@ -448,6 +448,17 @@ body {
   .glow-card .glow-content {
     --active: 0.15; /* Subtle constant glow on mobile */
   }
+  .glow-card .glow-content::after {
+    /* Override complex intersecting masks which break on iOS/WebKit and flood the card.
+       Instead, use a simple linear-gradient mask that only paints the border area.
+       The inner transparent part masks out the center. */
+    mask-image: linear-gradient(#fff 0 0);
+    mask-clip: border-box;
+    mask-composite: exclude;
+    -webkit-mask-image: linear-gradient(#fff 0 0);
+    -webkit-mask-clip: border-box;
+    -webkit-mask-composite: xor;
+  }
 }
 /* 6. Hero Text Shutter Animation */
 .hero-text-container {
